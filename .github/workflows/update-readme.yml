@@ -1,0 +1,36 @@
+name: Update README
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Update README
+        run: |
+          file="README.md"
+          start_comment="<!--START-->"
+          end_comment="<!--END-->"
+          if grep -q "$start_comment" "$file"; then
+              # Get the current time
+              current_time="\`Last update made at: $(date +'%Y.%m.%d %H:%M')\`"
+
+              # Create a string with the desired format
+              time_string="$start_comment\n$current_time\n$end_comment"
+
+              # Use sed to replace the content between start and end comments
+              sed -i "/$start_comment/,/$end_comment/ c $time_string" "$file"
+          else
+            echo "Start comment not found in $file"
+          fi
+          git add README.md
+          git commit -m "Update README"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
