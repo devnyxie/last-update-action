@@ -29,6 +29,8 @@ jobs:
           else
             echo "Start comment not found in $file"
           fi
+          git config --global user.email "last-update-action@gmail.com"
+          git config --global user.name "last-update-action"
           git add README.md
           git commit -m "Update README"
           git push
